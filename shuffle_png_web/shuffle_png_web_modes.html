@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>PNG Pixel Shuffle</title>
+	<style>
+		body { font-family: sans-serif; background-color:#ccc; }
+		canvas { border: 1px solid #fff; margin: 10px; }
+		input[type="text"] { width: 800px; }
+		.block { border: 1px solid #fff; display:inline-block; margin: 10px; padding: 5px;}
+		.buttons { margin-top: 5px; }
+		.canvas-container { float:left; }
+		.canvas-container canvas {
+			max-width: 40vw;
+			height: auto;
+			display: block;
+		}
+		input[readonly] { background-color: #eee; color: #999; }
+		.key { padding-top: 5px; }
+	</style>
+</head>
+<body>
+	<h2>PNG Pixel Shuffle</h2>
+	<p>At the left side, upload a picture of your chonky cat. Press Shuffle. The shuffled picture will appear on the right side. <br />
+	Use the picture from the right side and the provided key to unshuffle back to the original.</p>
+	<div class="block">
+	<label>Key:</label>
+	<input type="text" id="keyInput" />
+	<label>
+		<input type="checkbox" id="autoKey" checked="checked" onchange="updateKeyField();" />
+		Generate new key
+	</label>
+	<div class="key">Key length <input type="number" id="keySize" value="64" min="1" step="1" style="width:80px" /></div>
+	</div>
+	<div style="clear:both" />
+	<div class="block">
+		Change mod for 
+		<label><input type="radio" name="mode" value="shuffle" checked="checked" onchange="process();" /> Shuffle</label>
+		<label><input type="radio" name="mode" value="unshuffle" onchange="process();" /> Unshuffle</label>
+		<br /><br />
+		<label>Mode (rotation in 4 quadrants)</label>
+		<select id="q0" onchange="process()"></select>
+		<select id="q1" onchange="process()"></select>
+		<select id="q2" onchange="process()"></select>
+		<select id="q3" onchange="process()"></select>
+		<div style="margin-top: 5px;">
+			<button onclick="randomizeModes(); process();">Random Modes</button>
+		</div>
+	</div>
+	<div style="clear:both" />
+	<div class="block">
+		<label>
+			<input type="checkbox" id="resizeCheckbox" onchange="updateResizeField(); process();" />
+			Resize image
+		</label>
+		<input type="number" id="resizeSize" value="1024" min="32" step="1" style="width:80px" readonly="readonly" onchange="process();" />
+		px
+		<div style="font-size: 0.9em; color: #555; max-width: 300px; margin-top: 4px;">
+			Use 2<sup>n</sup> to draw fractals. For scrambling pixels use different.
+		</div>
+	</div>
+	<div style="clear:both" />
+	<div class="block">
+		<!-- Original Image Canvas and Controls -->
+		<div class="canvas-container">
+			<div class="button-group">
+				<input type="file" id="fileInput1" accept="image/*" />
+				<div class="buttons"><button onclick="shuffle();">Shuffle →</button></div>
+			</div>
+			<canvas id="canvas1"></canvas>
+			<div class="buttons">
+				<button onclick="downloadCanvas(canvas1)">Download Image</button>
+			</div>
+		</div>
+
+		<!-- Shuffled Image Canvas and Controls -->
+		<div class="canvas-container">
+			<div class="button-group">
+				<input type="file" id="fileInput2" accept="image/*" />
+				<div class="buttons"><button onclick="unshuffle();">← Unshuffle</button></div>
+			</div>
+			<canvas id="canvas2"></canvas>
+			<div class="buttons">
+				<button onclick="downloadCanvas(canvas2)">Download Image</button>
+			</div>
+		</div>
+	</div>
+	<div style="clear:both" />
+	<div id="console-log" style="margin:10px; color:red; font-weight:bold;"></div>
+	<script src="shuffle_png_web_modes.js?v=2"></script>
+	<b><a href="https://github.com/xcontcom/perfect-shuffle-cryptography">https://github.com/xcontcom/perfect-shuffle-cryptography</a></b>
+	<div style="margin-top:20px; font-size:0.95em; color:#444; max-width:600px;">
+	<b>Quick Guide:</b><br />
+	To create cool fractals:<br />
+	- Uncheck <i>"Generate new key"</i> and enter the key <code>1111111111</code><br />
+	- Check <i>"Resize image"</i> and set size to <b>1024 px</b> (2<sup>n</sup> sizes produce fractals).<br />
+	- Upload a picture of your chonky cat.<br />
+	- Click <b>"Random Modes"</b> to explore patterns.<br /><br />
+	To scramble your image instead:<br />
+	- Keep <i>"Generate new key"</i> checked.<br />
+	- Use a size <b>not</b> equal to 2<sup>n</sup> (e.g., 754, 902) to avoid recognizable patterns.
+	</div>
+</body>
+</html>
